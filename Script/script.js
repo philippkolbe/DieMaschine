@@ -1,20 +1,28 @@
-let text = "";
-foo();
+let p1, p2, p3, p4;
 
-async function foo() {
+async function createP() {
     try {
-        text = await httpGetAsync();
-        document.getElementById("p").innerHTML = text;
+        await makeAllHtppRequests();
+        document.getElementById("p1").innerHTML = p1;
+        document.getElementById("p2").innerHTML = p2;
+        document.getElementById("p3").innerHTML = p3;
+        document.getElementById("p4").innerHTML = p4;
     } catch (err) {
         console.log(err);
     }
 }
 
-function httpGetAsync() {
+async function makeAllHtppRequests() {
+    p1 = await httpGetAsync('seasons', 'start=2004&end=2018');
+    p2 = await httpGetAsync('matchday', 'season=2018&matchdayNr=1');
+    p3 = await httpGetAsync('current', '');
+    p4 = await httpGetAsync('currentMatchday', '');
+}
+
+function httpGetAsync(urlEnd, params) {
     return new Promise((resolve, reject) => {
         var http = new XMLHttpRequest();
-        var url = 'http://localhost:3000';
-        var params = 'start=2002&end=2018';
+        var url = 'http://localhost:3000/' + urlEnd;
         http.open('POST', url, true);
 
         //Send the proper header information along with the request

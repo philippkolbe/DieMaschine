@@ -2,39 +2,54 @@ var express = require('express');
 var router = express.Router();
 const script = require('../public/javascripts/script.js');
 
-router.post('/seasons', async (req, res, next) => {
-    let start = getStartEnd(req.body.start);
-    let end = getStartEnd(req.body.end);
+router.post('/seasons', async (req, res, next) => { 
+    //console.log("Got request '/seasons'");
 
-    console.log("Got request '/'");
+    let start = parseInt(req.body.start);
+    let end = parseInt(req.body.end);
+
     let allGames = await script.getSeasons(start, end);
+    let response = JSON.stringify(allGames);
     
-    res.send(JSON.stringify(allGames));
+    //console.log("Seasons: " + response);
+
+    res.send(response);
 });
 
 router.post('/matchday', async (req, res, next) => {
-    let start = getStartEnd(req.body.season);
-    let end = getStartEnd(req.body.matchdayNr);
+    //console.log("Got request '/matchday'");
 
-    console.log("Got request '/'");
-    let allGames = await script.getMatchday(season, matchdayNr);
+    let season = parseInt(req.body.season);
+    let matchdayNr = parseInt(req.body.matchdayNr);
+
+    let matchday = await script.getMatchday(season, matchdayNr);
+    let response = JSON.stringify(matchday);
+
+    //console.log("Matchday: " + response);
     
-    res.send(JSON.stringify(allGames));
+    res.send(response);
 });
 
 router.post('/current', async (req, res, next) => {
-    console.log("Got request '/'");
-    let allGames = await script.getCurrentMatchdayNr();
+    //console.log("Got request '/current'");
+
+    let currentMatchdayNr = await script.getCurrentMatchdayNr();
+    let response = JSON.stringify(currentMatchdayNr);
+
+    //console.log("CurrentMatchdayNr: " + response);
     
-    res.send(JSON.stringify(allGames));
+    res.send(response);
 });
 
 router.post('/currentMatchday', async (req, res, next) => {
+    //console.log("Got request '/currentMatchday'");
 
-    console.log("Got request '/'");
-    let allGames = await script.getCurrentMatchday();
+    let currentMatchday = await script.getCurrentMatchday();
+    let response = JSON.stringify(currentMatchday);
+
+    //console.log("CurrentMatchday: " + response);
     
-    res.send(JSON.stringify(allGames));
+    res.send(response);
 });
 
 function getThisSeasonYear() {
@@ -56,7 +71,7 @@ function getStartEnd(startEnd) {
 
 function isValid(int) {
     return (Number.isInteger(new Number(int)) &&
-        int < 2002 &&
+        int < 2004 &&
         int > getThisSeasonYear());
 }
 

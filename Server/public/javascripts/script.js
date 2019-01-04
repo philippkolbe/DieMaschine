@@ -8,15 +8,19 @@ module.exports.getSeasons = async (start, end) => {
         let allSeasons = [];
 
         for (let year = start; year <= end; year++) {
+            if (year == 2003)
+                break;
+            
             let savedSeason;
-
+            
             if (await fs.isFileCreated("Season " + year)) {//name
-                savedSeason = await JSON.parse(fs.getSavedFile("Season " + year));
+                savedSeason = JSON.parse(await fs.getSavedFile("Season " + year));
             }
 
             if (savedSeason == undefined || isUpdateNeeded(savedSeason)) {
-                let seasonObj = await createObj(new Season(year, JSON.parse(await Openliga(year))));//func
-                fs.writeFile("Season " + year, JSON.stringify(season));
+                let seasonObj = await createObj(new Season(year, await Openliga.getSeason(year)));//func
+
+                fs.writeFile("Season " + year, JSON.stringify(seasonObj));
 
                 allSeasons.push(seasonObj.content);
             } else {
@@ -26,7 +30,7 @@ module.exports.getSeasons = async (start, end) => {
 
         return allSeasons;
     } catch(err) {
-        console.log(err.message);
+        console.log(err);
     }
 }
 
@@ -35,16 +39,18 @@ module.exports.getMatchday = async (year, matchdayNr) => {
         let savedSeason;
 
         if (await fs.isFileCreated("Season " + year)) {
-            savedSeason = await JSON.parse(fs.getSavedFile("Season " + year));
+            savedSeason = JSON.parse(await fs.getSavedFile("Season " + year));
         }
 
         if (savedSeason == undefined || isUpdateNeeded(savedSeason)) {
-            return await Matchday.createMatchday(year, matchdayNr);
+            let matchday = new Matchday(matchdayNr, await Openliga.getMatchday(year, matchdayNr));
+
+            return matchday;
         } else {
-            return savedSeason.content[matchdayNr - 1];
-        }
+            return savedSeason.content.matchdays[matchdayNr - 1];
+        } 
     } catch(err) {
-        console.log(err.message);
+        console.log(err);
     }
 }
 
@@ -53,12 +59,11 @@ module.exports.getCurrentMatchday = async () => {
         let savedCurrentMatchday;
 
         if (await fs.isFileCreated("currentMatchday")) {
-            savedCurrentMatchday = await JSON.parse(fs.getSavedFile("currentMatchday"));
+            savedCurrentMatchday = JSON.parse(await fs.getSavedFile("currentMatchday"));
         }
 
-        if (savedSeason == undefined || isUpdateNeeded(savedCurrentMatchday)) {
-            let currentMatchdayObj = createObj(await Openliga.getCurrentMatchday);
-
+        if (savedCurrentMatchday == undefined || isUpdateNeeded(savedCurrentMatchday)) {
+            let currentMatchdayObj = createObj(new Matchday(await Openliga.getCurrentMatchdayNr().GroupOrderID, await Openliga.getCurrentMatchday()));
             fs.writeFile("currentMatchday", JSON.stringify(currentMatchdayObj));
 
             return currentMatchdayObj.content;
@@ -66,7 +71,7 @@ module.exports.getCurrentMatchday = async () => {
             return savedCurrentMatchday.content;
         }
     } catch(err) {
-        console.log(err.message);
+        console.log(err);
     }
 }
 
@@ -75,11 +80,13 @@ module.exports.getCurrentMatchdayNr = async () => {
         let savedCurrentMatchdayNr;
 
         if (await fs.isFileCreated("currentMatchdayNr")) {
-            savedCurrentMatchdayNr = await JSON.parse(fs.getSavedFile("currentMatchdayNr"));
+            savedCurrentMatchdayNr = JSON.parse(await fs.getSavedFile("currentMatchdayNr"));
         }
 
-        if (savedSeason == undefined || isUpdateNeeded(savedCurrentMatchdayNr)) {
-            let currentMatchdayNrObj = createObj(await Openliga.getCurrentMatchdayNr);
+        if (savedCurrentMatchdayNr == undefined || isUpdateNeeded(savedCurrentMatchdayNr)) {
+            let currentMatchdayNr = await Openliga.getCurrentMatchdayNr();
+
+            let currentMatchdayNrObj = createObj(currentMatchdayNr.GroupOrderID);
 
             fs.writeFile("currentMatchdayNr", JSON.stringify(currentMatchdayNrObj));
 
@@ -88,7 +95,7 @@ module.exports.getCurrentMatchdayNr = async () => {
             return savedCurrentMatchdayNr.content;
         }
     } catch(err) {
-        console.log(err.message);
+        console.log(err);
     }
 }
 

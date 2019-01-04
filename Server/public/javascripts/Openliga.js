@@ -12,8 +12,7 @@ module.exports.getMatchday = async (season, matchdayNr) => {
         }
 
         let data = await httpRequest(url);
-        //console.log("getOpenliga: " + JSON.parse(data));
-        return data;
+        return JSON.parse(data);
     } else {
         return new Error("Season != Int");
     }
@@ -21,29 +20,26 @@ module.exports.getMatchday = async (season, matchdayNr) => {
 
 module.exports.getSeason = async (season) => {
     let url = 'https://www.openligadb.de/api/getmatchdata/bl1';
-    if (Number.isInteger(season)) {
+    if (new Number(season)) {
         url += '/' + season;
 
         let data = await httpRequest(url);
-        //console.log("getOpenliga: " + JSON.parse(data));
-        return data;
+        return JSON.parse(data);
     } else {
-        return new Error("Season != Int");
+        throw new Error("Season != Int");
     }
 }
 
 module.exports.getCurrentMatchday = async () => {
     let url = 'https://www.openligadb.de/api/getmatchdata/bl1';
     let data = await httpRequest(url);
-    //console.log("getOpenliga: " + JSON.parse(data));
-    return data;
+    return JSON.parse(data);
 }
 
 module.exports.getCurrentMatchdayNr = async () => {
     let url = 'https://www.openligadb.de/api/getcurrentgroup/bl1';
     let data = await httpRequest(url);
-    //console.log("getOpenliga: " + JSON.parse(data));
-    return data;
+    return JSON.parse(data);
 }
 
 async function httpRequest(url) {
@@ -54,12 +50,10 @@ async function httpRequest(url) {
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
                 data += chunk;
-                //console.log("httpRequest data: " + JSON.parse(data)[0].Group.GroupID);
             });
     
             // The whole response has been received. Print out the result.
-            resp.on('end', () => {
-                //console.log("httpRequest end: " + JSON.parse(data)[0].Group.GroupID);
+            resp.on('end', () => {;
                 resolve(data);
             });
     

@@ -3,6 +3,7 @@ let Openliga = require('./Openliga');
 
 class Matchday {
     constructor(matchDayNr, matchdayMatches) {
+        //console.log("Creating new matchday: " + matchDayNr);
         this.matchDayNr = matchDayNr;
         this.matches = [];
         
@@ -13,7 +14,3 @@ class Matchday {
 }
 
 module.exports = Matchday;
-
-module.exports.createMatchday = async (year, matchdayNr) => {
-    return new Matchday(matchDayNr, await Openliga(year, matchdayNr));
-}
