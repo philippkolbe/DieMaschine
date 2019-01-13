@@ -13,8 +13,8 @@ async function createP() {
 }
 
 async function makeAllHtppRequests() {
-    p1 = await httpGetAsync('seasons', 'start=2004&end=2018');
-    p2 = await httpGetAsync('matchday', 'season=2018&matchdayNr=1');
+    p1 = await httpGetAsync('season', 'start=2005&end=2018');
+    p2 = await httpGetAsync('matchday', 'season=2018&start=1&end=5');
     p3 = await httpGetAsync('current', '');
     p4 = await httpGetAsync('currentMatchday', '');
 }
