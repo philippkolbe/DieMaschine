@@ -55,7 +55,9 @@ module.exports.handleRequest = async (handler) => {
 module.exports.SeasonHandler = class {
     constructor(start, end) {
         this.start = this.isValidStart(start);
+        console.log(start, this.start);
         this.end = this.isValidEnd(end);
+        console.log(end, this.end);
     }
 
     isValidStart(nr) {

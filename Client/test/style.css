@@ -1,0 +1,37 @@
+section {
+    margin: 20px;
+    height: 250px;
+    width: 300px;
+}
+
+section#section1 {
+    left: 30px;
+    top: 100px;
+    background-color: blue;
+    color: white
+}
+
+section#section2 {
+    left: 30px;
+    top: 100px;
+    background-color: red;
+    color: white;
+}
+
+section#section3 {
+    left: 30px;
+    top: 100px;
+    background-color: green;
+    color: white
+}
+
+section#section4 {
+    left: 30px;
+    top: 100px;
+    background-color: yellow;
+}
+
+iframe {
+    position: relative;
+    left: 300px;
+}
