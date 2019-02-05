@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3/dist/tf.min.js"> </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+        <script src="tester.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div class="main">
+            <section id="section1" class="container">
+                <form action="localhost:3000/season" method="GET" target="_blank">
+                    <h2>Get Seasons</h2>
+                    <label for="start">Starting season:</label><br>
+                    <input type="number" name="start" value="2004"><br>
+                    <label for="end">Ending season:</label><br>
+                    <input type="number" name="end" value="2018"><br>
+                    <input type="submit" value="Go!">
+                </form>
+            </section>
+            <section id="section2" class="container">
+                <form action="localhost:3000/matchday" method='GET' target="_blank">
+                    <h2>Get Matchdays</h2>
+                    <label for="season">Season:</label><br>
+                    <input type="number" name="season" value="2018"><br>
+                    <label for="start">Starting matchday:</label><br>
+                    <input type="number" name="start" value="1"><br>
+                    <label for="end">Ending matchday:</label><br>
+                    <input type="number" name="end" value="6"><br>
+                    <input type="submit" value="Go!">
+                </form>
+            </section>
+            <section id="section3" class="container">
+                <form action="localhost:3000/current" method="GET" target="_blank">
+                    <h2>Get Current Matchday-Nr</h2>
+                    <input type="submit" value="Go!">
+                </form>
+            </section>
+            <section id="section4" class="container">
+                <form action="localhost:3000/matchday" method="GET" target="_blank">
+                    <h2>Get Current Matchday</h2>
+                    <input type="submit" value="Go!">
+                </form>
+            </section>            
+        </div>
+    </body>
+</html>

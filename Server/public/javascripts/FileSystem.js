@@ -1,28 +1,15 @@
 
 const fs = require('fs');
 
-const filesDir = './files/';
+const filesDir = './data/';
 
 module.exports.getSavedFile = (name) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(filesDir + name + '.json', (err, data) => {  
-            if (err)
-                reject(err);
-            resolve(data);
-        });
-    });
-}
+    return JSON.parse(fs.readFileSync(filesDir + name + '.json'));
+};
 
 module.exports.isFileCreated = (name) => {
-    return new Promise((resolve, reject) => {
-        fs.stat(filesDir + name + '.json', (err, stat) => {
-            if(err == null)
-                resolve(true);
-            else 
-                resolve(false);
-        });
-    });
-}
+    return fs.existsSync(filesDir + name + '.json');
+};
 
 module.exports.writeFile = async (name, content) => {
     return new Promise((resolve, reject) => {
@@ -33,4 +20,4 @@ module.exports.writeFile = async (name, content) => {
                 resolve();
         });
     });
-}
+};

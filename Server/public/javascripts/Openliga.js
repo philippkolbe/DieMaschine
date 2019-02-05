@@ -16,7 +16,7 @@ module.exports.getMatchday = async (season, matchdayNr) => {
     } else {
         return new Error("Season != Int");
     }
-}
+};
 
 module.exports.getSeason = async (season) => {
     let url = 'https://www.openligadb.de/api/getmatchdata/bl1';
@@ -28,7 +28,7 @@ module.exports.getSeason = async (season) => {
     } else {
         throw new Error("Season != Int");
     }
-}
+};
 
 module.exports.getCurrentMatchday = async () => {
     let url = 'https://www.openligadb.de/api/getmatchdata/bl1';
@@ -40,7 +40,7 @@ module.exports.getCurrentMatchdayNr = async () => {
     let url = 'https://www.openligadb.de/api/getcurrentgroup/bl1';
     let data = await httpRequest(url);
     return JSON.parse(data);
-}
+};
 
 async function httpRequest(url) {
     return new Promise((resolve, reject) => {
