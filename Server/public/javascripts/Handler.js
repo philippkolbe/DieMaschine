@@ -1,63 +1,12 @@
+const Openliga = require('./Openliga');
 const Season = require('./Season');
 const Matchday = require('./Matchday');
-const fs = require('./FileSystem');
-const Openliga = require('./Openliga');
-
-function isUpdateNeeded(obj) {
-    return (Date.now() - obj.updateDate > 24*60*60*1000);
-}
-
-function createObj(content) {
-    return {
-        lastUpdateDate: Date.now(),
-        content: content
-    };
-}
-
-module.exports.handleSeveralRequests = async (handler) => {
-    try {
-        let arr = [];
-        console.log(handler);
-        for (handler.i = handler.start; handler.i <= handler.end; handler.i++) {
-            let data = await module.exports.handleRequest(handler);
-            arr.push(JSON.parse(data));
-        }
-            
-        return JSON.stringify(arr);
-    } catch (err) {
-        console.log(err);
-    }
-};
-
-module.exports.handleRequest = async (handler) => {
-    try {
-        let savedFile;
-
-        if (fs.isFileCreated(handler.fileName)) {
-            savedFile = fs.getSavedFile(handler.fileName);
-        }
-
-        if (savedFile == undefined || isUpdateNeeded(savedFile)) {
-            let content = await handler.getContent();
-            let obj = createObj(content);
-
-            fs.writeFile(handler.fileName, JSON.stringify(obj));
-
-            return JSON.stringify(obj.content);
-        } else {
-            return JSON.stringify(savedFile.content);
-        }
-    } catch (err) {
-        console.log(err);
-    }
-};
+const StandingsCalculator = require('./StandingsCalculator');
 
 module.exports.SeasonHandler = class {
     constructor(start, end) {
         this.start = this.isValidStart(start);
-        console.log(start, this.start);
         this.end = this.isValidEnd(end);
-        console.log(end, this.end);
     }
 
     isValidStart(nr) {
@@ -91,7 +40,7 @@ module.exports.SeasonHandler = class {
     }
 
     get fileName() {
-        return "Season " + this.i;
+        return `Season ${ this.i }`;
     }
 
     async getContent() {
@@ -135,17 +84,19 @@ module.exports.MatchdayHandler = class {
 
     isEndValid(nr) {
         let int = parseInt(nr);
-
-        if (int < 1)
-            return 1;
-        else if (int > 34)
+        if (Number.isInteger(int)) {
+            if (int < 1)
+                return 1;
+            else if (int > 34)
+                return 34;
+            else
+                return int;
+        } else
             return 34;
-
-        return int;
     }
 
     get fileName() {
-        return "Season " + this.season + " Matchday " + this.i;
+        return `Season ${ this.season } Matchday ${ this.i }`;
     }
 
     async getContent() {
@@ -170,6 +121,66 @@ module.exports.CurrentMatchdayHandler = class {
 
     async getContent() {
         return await Openliga.getCurrentMatchday();
+    }
+};
+
+module.exports.StandingsHandler = class {
+    constructor(season, matchday) {
+        this.season = season;
+        this.matchday = matchday;
+    }
+
+    async getContent() {
+        return StandingsCalculator(this.season, this.matchday);
+    }
+
+    get fileName()  {
+        return `Season ${ this.season } ${ this.matchday } Standings`;
+    }
+};
+
+module.exports.HomeStandingsHandler = class {
+    constructor(season, matchday) {
+        this.season = season;
+        this.matchday = matchday;
+    }
+
+    async getContent() {
+        return StandingsCalculator(this.season, this.matchday, 34, {home: true});
+    }
+
+    get fileName()  {
+        return `Season ${ this.season } ${ this.matchday } Homestandings`;
+    }
+};
+
+module.exports.AwayStandingsHandler = class {
+    constructor(season, matchday) {
+        this.season = season;
+        this.matchday = matchday;
+    }
+
+    async getContent() {
+        return StandingsCalculator(this.season, this.matchday, 34, {away: true});
+    }
+
+    get fileName()  {
+        return `Season ${ this.season } ${ this.matchday } Awaystandings`;
+    }
+};
+
+module.exports.FormStandingsHandler = class {
+    constructor(season, matchday) {
+        this.season = season;
+        this.matchday = matchday;
+    }
+
+    async getContent() {
+        return StandingsCalculator(this.season, this.matchday, 5);
+    }
+
+    get fileName()  {
+        return `Season ${ this.season } ${ this.matchday } Formstandings`;
     }
 };
 

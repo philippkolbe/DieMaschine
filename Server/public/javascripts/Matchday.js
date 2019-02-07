@@ -1,14 +1,12 @@
 let Match = require('./Match');
 
 class Matchday {
-    constructor(matchDayNr, matchdayMatches, onlyResults) {
+    constructor(matchDayNr, matchdayMatches) {
         //console.log("Creating new matchday: " + matchDayNr);
         this.matchDayNr = matchDayNr;
         this.matches = [];
         
-        for (let m of matchdayMatches) {
-            this.matches.push(new Match(m, onlyResults));
-        }
+        this.matches = matchdayMatches.map(m => new Match(m));
     }
 }
 

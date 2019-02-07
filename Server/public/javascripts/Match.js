@@ -1,13 +1,16 @@
 class Match {
-    constructor(match, onlyResults) {
+    constructor(match) {
         //console.log("Creating new match: " + match.MatchID);
 
-        this.teams = [new Team(match, 0),
+        this.teams = [
+            new Team(match, 0),
             new Team(match, 1)
         ];
-        if (match.MatchIsFinished && onlyResults) {
-            this.pointsTeam1 = match.MatchResults[0].PointsTeam1;
-            this.pointsTeam2 = match.MatchResults[0].PointsTeam2;
+        if (match.MatchIsFinished) {
+            this.result = [
+                match.MatchResults[0].PointsTeam1,
+                match.MatchResults[0].PointsTeam2
+            ];
         }
     }
 }

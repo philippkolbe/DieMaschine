@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const script = require('../public/javascripts/script.js');
+const requestHandler = require('../public/javascripts/requestHandler');
+const Handler = require('../public/javascripts/Handler');
 
 router.get('/season', async (req, res, next) => {
-    let response = await script.handleSeveralRequests(new script.SeasonHandler(req.query.start, req.query.end));
+    let response = await requestHandler.handleSeveralRequests(new Handler.SeasonHandler(req.query.start, req.query.end));
     
     //console.log("Seasons: " + response);
 
@@ -11,7 +12,7 @@ router.get('/season', async (req, res, next) => {
 });
 
 router.get('/matchday', async (req, res, next) => {
-    let response = await script.handleSeveralRequests(new script.MatchdayHandler(req.query.season, req.query.start, req.query.end));
+    let response = await requestHandler.handleSeveralRequests(new Handler.MatchdayHandler(req.query.season, req.query.start, req.query.end));
 
     //console.log("Matchday: " + response);
     
@@ -19,15 +20,39 @@ router.get('/matchday', async (req, res, next) => {
 });
 
 router.get('/current', async (req, res, next) => {
-    let response = await script.handleRequest(new script.CurrentMatchdayNrHandler());
+    let response = await requestHandler.handleRequest(new Handler.CurrentMatchdayNrHandler());
 
    // console.log("CurrentMatchdayNr: " + response);
     
     res.send(response);
 });
 
-router.get('/currentMatchday', async (req, res, next) => {
-    let response = await script.handleRequest(new script.CurrentMatchdayHandler());
+router.get('/standings', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(new Handler.StandingsHandler(req.query.season, req.query.matchday));
+
+    //console.log("CurrentMatchday: " + response);
+    
+    res.send(response);
+});
+
+router.get('/homeStandings', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(new Handler.HomeStandingsHandler(req.query.season, req.query.matchday));
+
+    //console.log("CurrentMatchday: " + response);
+    
+    res.send(response);
+});
+
+router.get('/awayStandings', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(new Handler.AwayStandingsHandler(req.query.season, req.query.matchday));
+
+    //console.log("CurrentMatchday: " + response);
+    
+    res.send(response);
+});
+
+router.get('/formStandings', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(new Handler.FormStandingsHandler(req.query.season, req.query.matchday));
 
     //console.log("CurrentMatchday: " + response);
     
