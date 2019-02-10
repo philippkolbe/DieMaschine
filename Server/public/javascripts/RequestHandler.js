@@ -14,7 +14,7 @@ module.exports.handleSeveralRequests = async handler => {
     }
 };
 
-module.exports.handleRequest = async (handler) => {
+module.exports.handleRequest = async handler => {
     try {
         return JSON.stringify(await FileUpdater(handler));
     } catch (err) {
