@@ -2,6 +2,7 @@ const StandingsTeam = require('./StandingsTeam');
 
 module.exports = class {
     constructor(matchdays, config) {
+        //console.log("Creating Standings: mds length: " + matchdays.length);
         this.standings = [];
         this.setup(matchdays);
         this.calculate(matchdays, config);
@@ -24,7 +25,6 @@ module.exports = class {
         for (let teamNr = 0; teamNr < 2; teamNr++) {
             if (config.home && teamNr != 0 || config.away && teamNr != 1)
                 continue;
-            console.log("Calcing");
             let stats = this.calcStats(match, teamNr);
             let teamIdx = this.standings.findIndex(t => t.name == match.teams[teamNr].name);
             
