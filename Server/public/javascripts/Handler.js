@@ -4,103 +4,39 @@ const Matchday = require('./Matchday');
 const StandingsCalculator = require('./StandingsCalculator');
 
 module.exports.SeasonHandler = class {
-    constructor(start, end) {
-        this.start = this.isValidStart(start);
-        this.end = this.isValidEnd(end);
-    }
-
-    isValidStart(nr) {
-        let thisSeasonYear = getThisSeasonYear();
-        let int = parseInt(nr);
-
-        if (Number.isInteger(int)) {
-            if (int < 2004)
-                return 2004;
-            else if (int > thisSeasonYear)
-                return thisSeasonYear;
-            else
-                return int;
-        } else
-            return 2004;
-    }
-
-    isValidEnd(nr) {
-        let thisSeasonYear = getThisSeasonYear();
-        let int = parseInt(nr);
-
-        if (Number.isInteger(int)) {
-            if (int < 2004)
-                return 2004;
-            else if (int > thisSeasonYear)
-                return thisSeasonYear;
-            else
-                return int;
-        } else
-            return this.start;
+    constructor(start, end, areStandingsNeeded) {
+        //console.log("Creating SeasonHandler");
+        this.start = isValidSeason(start, 2004);
+        this.end = isValidSeason(end);
+        this.areStandingsNeeded = areStandingsNeeded;
+        this.i = this.start;
     }
 
     get fileName() {
-        return `Season ${ this.i }`;
+        return `Season ${ this.i } ${ (this.areStandingsNeeded != false) ? '' : 'without Standings'}`;
     }
 
     async getContent() {
-        return new Season(this.i, await Openliga.getSeason(this.i));
+        return await Season.createSeason(this.i, await Openliga.getSeason(this.i), this.areStandingsNeeded);
     }
 };
 
 module.exports.MatchdayHandler = class {
-    constructor(season, start, end) {
-        this.season = this.isSeasonValid(season);
-        this.start = this.isStartValid(start);
-        this.end = this.isEndValid(end);
-    }
-
-    isSeasonValid(nr) {
-        let thisSeasonYear = getThisSeasonYear();
-        let int = parseInt(nr);
-        if (Number.isInteger(int)) {
-            if (int < 2004)
-                return 2004;
-            else if (int > thisSeasonYear)
-                return thisSeasonYear;
-            else
-                return int;
-        } else
-            return thisSeasonYear;
-    }
-
-    isStartValid(nr) {
-        let int = parseInt(nr);
-        if (Number.isInteger(int)) {
-            if (int < 1)
-                return 1;
-            else if (int > 34)
-                return 34;
-            else
-                return int;
-        } else
-            return 1;
-    }
-
-    isEndValid(nr) {
-        let int = parseInt(nr);
-        if (Number.isInteger(int)) {
-            if (int < 1)
-                return 1;
-            else if (int > 34)
-                return 34;
-            else
-                return int;
-        } else
-            return 34;
+    constructor(season, start, end, areStandingsNeeded) {
+        //console.log("Creating Matchday Handler");    
+        this.season = isValidSeason(season);
+        this.start = isValidMatchday(start, 1);
+        this.end = isValidMatchday(end, 34);
+        this.areStandingsNeeded = areStandingsNeeded;
+        this.i = this.start;
     }
 
     get fileName() {
-        return `Season ${ this.season } Matchday ${ this.i }`;
+        return `Season ${ this.season } Matchday ${ this.i } ${ (this.areStandingsNeeded != false) ? '' : 'without Standings'}`;
     }
 
     async getContent() {
-        return new Matchday(this.i, await Openliga.getMatchday(this.season, this.i));
+        return Matchday.createMatchday(this.season, this.i, await Openliga.getMatchday(this.season, this.i));
     }
 };
 
@@ -125,64 +61,100 @@ module.exports.CurrentMatchdayHandler = class {
 };
 
 module.exports.StandingsHandler = class {
-    constructor(season, matchday) {
-        this.season = season;
-        this.matchday = matchday;
+    constructor(season, matchday, seasonMatches) {
+        //console.log("Creating StandingsHandler");
+        this.season = isValidSeason(season);
+        this.matchday = isValidMatchday(matchday);
+        this.seasonMatches = seasonMatches;
     }
 
     async getContent() {
-        return StandingsCalculator(this.season, this.matchday);
+        return await StandingsCalculator.calculateStandings(this.season, this.matchday, this.seasonMatches);
     }
 
     get fileName()  {
-        return `Season ${ this.season } ${ this.matchday } Standings`;
+        return `Season ${ this.season } Matchday ${ this.matchday } Standings`;
     }
 };
 
 module.exports.HomeStandingsHandler = class {
-    constructor(season, matchday) {
-        this.season = season;
-        this.matchday = matchday;
+    constructor(season, matchday, seasonMatches) {
+        //console.log("Creating HomeStandingsHandler");
+        this.season = isValidSeason(season);
+        this.matchday = isValidMatchday(matchday);
+        this.seasonMatches = seasonMatches;
     }
 
     async getContent() {
-        return StandingsCalculator(this.season, this.matchday, 34, {home: true});
+        return await StandingsCalculator.calculateStandings(this.season, this.matchday, this.seasonMatches, 34, {home: true});
     }
 
     get fileName()  {
-        return `Season ${ this.season } ${ this.matchday } Homestandings`;
+        return `Season ${ this.season } Matchday ${ this.matchday } Homestandings`;
     }
 };
 
 module.exports.AwayStandingsHandler = class {
-    constructor(season, matchday) {
-        this.season = season;
-        this.matchday = matchday;
+    constructor(season, matchday, seasonMatches) {
+        //console.log("Creating AwayStandingsHandler");
+        this.season = isValidSeason(season);
+        this.matchday = isValidMatchday(matchday);
+        this.seasonMatches = seasonMatches;
     }
 
     async getContent() {
-        return StandingsCalculator(this.season, this.matchday, 34, {away: true});
+        return await StandingsCalculator.calculateStandings(this.season, this.matchday, this.seasonMatches, 34, {away: true});
     }
 
     get fileName()  {
-        return `Season ${ this.season } ${ this.matchday } Awaystandings`;
+        return `Season ${ this.season } Matchday ${ this.matchday } Awaystandings`;
     }
 };
 
 module.exports.FormStandingsHandler = class {
-    constructor(season, matchday) {
-        this.season = season;
-        this.matchday = matchday;
+    constructor(season, matchday, seasonMatches) {
+        //console.log("Creating FormStandingsHandler");
+        this.season = isValidSeason(season);
+        this.matchday = isValidMatchday(matchday);
+        this.seasonMatches = seasonMatches;
     }
 
     async getContent() {
-        return StandingsCalculator(this.season, this.matchday, 5);
+        return await StandingsCalculator.calculateStandings(this.season, this.matchday, this.seasonMatches, 5);
     }
 
     get fileName()  {
-        return `Season ${ this.season } ${ this.matchday } Formstandings`;
+        return `Season ${ this.season } Matchday ${ this.matchday } Formstandings`;
     }
 };
+
+function isValidSeason(nr, defaultNr) {
+    let thisSeasonYear = getThisSeasonYear();
+    let int = parseInt(nr);
+
+    if (Number.isInteger(int)) {
+        if (int < 2004)
+            return 2004;
+        else if (int > thisSeasonYear)
+            return thisSeasonYear;
+        else
+            return int;
+    } else
+        return defaultNr || thisSeasonYear;
+}
+
+function isValidMatchday(nr, defaultNr) {
+    let int = parseInt(nr);
+    if (Number.isInteger(int)) {
+        if (int < 1)
+            return 1;
+        else if (int > 34)
+            return 34;
+        else
+            return int;
+    } else
+        return defaultNr || 34;
+}
 
 function getThisSeasonYear() {
     let d = new Date();
