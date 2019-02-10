@@ -13,7 +13,7 @@ module.exports.SeasonHandler = class {
     }
 
     get fileName() {
-        return `Season ${ this.i } ${ (this.areStandingsNeeded != false) ? '' : 'without Standings'}`;
+        return `Season ${ this.i }${ (this.areStandingsNeeded != false) ? '' : ' without Standings'}`;
     }
 
     async getContent() {
@@ -32,7 +32,7 @@ module.exports.MatchdayHandler = class {
     }
 
     get fileName() {
-        return `Season ${ this.season } Matchday ${ this.i } ${ (this.areStandingsNeeded != false) ? '' : 'without Standings'}`;
+        return `Season ${ this.season } Matchday ${ this.i }${ (this.areStandingsNeeded != false) ? '' : ' without Standings'}`;
     }
 
     async getContent() {
@@ -65,6 +65,8 @@ module.exports.StandingsHandler = class {
         //console.log("Creating StandingsHandler");
         this.season = isValidSeason(season);
         this.matchday = isValidMatchday(matchday);
+        if (season == 2004 && matchday == 1)
+            console.log("StandingsHandler: " + JSON.stringify(seasonMatches))
         this.seasonMatches = seasonMatches;
     }
 

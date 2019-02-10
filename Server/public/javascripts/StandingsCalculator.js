@@ -3,12 +3,16 @@ const Handler = require('./Handler');
 const Standings = require('./Standings');
 
 module.exports.calculateStandings = async function(seasonYear, matchdayNr, matchdays, nrOfGames, config) {
+    if (seasonYear == 2004 && matchdayNr == 1)
+        console.log("calcStandings1: " + JSON.stringify(matchdays));
     matchdays = matchdays || [];
     nrOfGames = nrOfGames || 34;
     config = config || {};
 
     //console.log("Calculating Standings " + seasonYear + " " + matchdayNr + ": " + getTypeOfStandings(nrOfGames, config));
-    if (matchdays.length > 0) {
+    if (seasonYear == 2004 && matchdayNr == 1)
+        console.log("calcStandings2: " + JSON.stringify(matchdays));
+    if (matchdays.length == 0) {
         matchdays = await getMatchdays(seasonYear);
         matchdays = spliceUnneeded(matchdays, matchdayNr, nrOfGames);
     }

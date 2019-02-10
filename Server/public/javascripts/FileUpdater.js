@@ -4,7 +4,7 @@ module.exports = async handler => {
     try {
         //console.log("FileUpdater: " + handler.fileName);
         let savedFile = await fs.getSavedFile(handler.fileName);
-        //console.log(`savedFile: ${savedFile.content}`);
+        //console.log(`savedFileContent: ${savedFile.content}`);
         if (isUpdateNeeded(savedFile)) {
             let newFileContent = await writeNewFile(handler);
             return newFileContent;
@@ -12,6 +12,7 @@ module.exports = async handler => {
             return savedFile.content;
         }
     } catch (e) { //File does not exist
+        console.log(e);
         let newFileContent = await writeNewFile(handler);
         return newFileContent;
     }

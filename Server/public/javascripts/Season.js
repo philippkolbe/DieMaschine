@@ -11,13 +11,18 @@ module.exports.createSeason = async (year, matches, areStandingsNeeded) => {
 
 class Season {
     constructor(year, matches, areStandingsNeeded) {
-        //console.log("Creating new season: " + year);
+        console.log("Creating new season: " + year);
         this.year = year;
         this.matchdays = [];
     }
 
     async createMatchdays(year, matches, areStandingsNeeded) {
-        const seasonWithoutStandings = await this.getSeasonWithoutStandings(year);
+        let seasonWithoutStandings;
+        if (areStandingsNeeded != false) {//Calcing season without standings for standings
+            seasonWithoutStandings = await this.getSeasonWithoutStandings(year);
+            //console.log("Season createMatchdays: " + JSON.stringify(seasonWithoutStandings));
+        }
+
         //console.log("Season Creating Matchdays: " + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
         for (let matchDayNr = 0; matchDayNr < 34; matchDayNr++) {
             let matchdayMatches = this.getMatchDayMatches(matches, matchDayNr);
@@ -34,7 +39,7 @@ class Season {
 
     getMatchDayMatches(matches, matchDayNr) {
         let matchdayMatches = [];
-
+        console.log(JSON.stringify(matches));
         for (let matchNr = 0; matchNr < 9; matchNr++) {
             let m = matches[matchDayNr*9 + matchNr];
             if (m.MatchIsFinished)
