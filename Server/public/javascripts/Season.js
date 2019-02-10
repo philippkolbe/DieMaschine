@@ -1,4 +1,6 @@
 const Matchday = require('./Matchday');
+const Handler = require('./Handler');
+const FileUpdater = require('./FileUpdater');
 
 module.exports.createSeason = async (year, matches, areStandingsNeeded) => {
     //console.log("createSeason()");
@@ -15,7 +17,7 @@ class Season {
     }
 
     async createMatchdays(year, matches, areStandingsNeeded) {
-        const seasonWithoutStandings = this.getSeasonWithoutStandings(year);
+        const seasonWithoutStandings = await this.getSeasonWithoutStandings(year);
         //console.log("Season Creating Matchdays: " + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
         for (let matchDayNr = 0; matchDayNr < 34; matchDayNr++) {
             let matchdayMatches = this.getMatchDayMatches(matches, matchDayNr);
@@ -25,7 +27,7 @@ class Season {
         }
     }
 
-    getSeasonWithoutStandings(year) {
+    async getSeasonWithoutStandings(year) {
         const seasonHandler = new Handler.SeasonHandler(year, year, false);
         return await FileUpdater(seasonHandler);
     }
