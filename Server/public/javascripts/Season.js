@@ -20,32 +20,36 @@ class Season {
         let seasonWithoutStandings;
         if (areStandingsNeeded != false) {//Calcing season without standings for standings
             seasonWithoutStandings = await this.getSeasonWithoutStandings(year);
-            //console.log("Season createMatchdays: " + JSON.stringify(seasonWithoutStandings));
         }
 
         //console.log("Season Creating Matchdays: " + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
-        for (let matchDayNr = 0; matchDayNr < 34; matchDayNr++) {
-            let matchdayMatches = this.getMatchDayMatches(matches, matchDayNr);
+        let promiseArr = [];
 
+        for (let matchDayNr = 0; matchDayNr < 34; matchDayNr++) {
+            let matchdayMatches = this.getMatchdayMatches(matches, matchDayNr);
+            //console.log("Season.createMatchdays: " + seasonWithoutStandings.matchdays.length);
             if (matchdayMatches.length > 0)
-                this.matchdays.push(await Matchday.createMatchday(year, matchDayNr + 1, matchdayMatches, areStandingsNeeded, seasonWithoutStandings));
+                promiseArr.push(Matchday.createMatchday(year, matchDayNr + 1, matchdayMatches, areStandingsNeeded, seasonWithoutStandings));
         }
+
+        this.matchdays = await Promise.all(promiseArr);
     }
 
     async getSeasonWithoutStandings(year) {
         const seasonHandler = new Handler.SeasonHandler(year, year, false);
-        return await FileUpdater(seasonHandler);
+        const season = await FileUpdater(seasonHandler);
+        //console.log("Season.getSeasonWithoutStandings: " + season.matchdays.length);
+        return season;
     }
 
-    getMatchDayMatches(matches, matchDayNr) {
+    getMatchdayMatches(matches, matchDayNr) {
         let matchdayMatches = [];
-        console.log(JSON.stringify(matches));
+        //console.log(JSON.stringify(matches));
         for (let matchNr = 0; matchNr < 9; matchNr++) {
             let m = matches[matchDayNr*9 + matchNr];
             if (m.MatchIsFinished)
                 matchdayMatches.push(m);
         }
-
         return matchdayMatches;
     }
 }

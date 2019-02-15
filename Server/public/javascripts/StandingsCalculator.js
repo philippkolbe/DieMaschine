@@ -2,23 +2,25 @@ const FileUpdater = require('./FileUpdater');
 const Handler = require('./Handler');
 const Standings = require('./Standings');
 
-module.exports.calculateStandings = async function(seasonYear, matchdayNr, matchdays, nrOfGames, config) {
-    if (seasonYear == 2004 && matchdayNr == 1)
-        console.log("calcStandings1: " + JSON.stringify(matchdays));
-    matchdays = matchdays || [];
+module.exports.calculateStandings = async function(seasonYear, matchdayNr, season, nrOfGames, config) {
+    /*if (seasonYear == 2004 && matchdayNr == 1)
+        console.log("calcStandings1: " + JSON.stringify(matchdays));*/
+    console.log("Calcing Standings " + seasonYear + ", " + matchdayNr + " " + getTypeOfStandings(nrOfGames, config) + " Matchdays length1: " + season.matchdays.length);
+    season = season || [];
     nrOfGames = nrOfGames || 34;
     config = config || {};
 
     //console.log("Calculating Standings " + seasonYear + " " + matchdayNr + ": " + getTypeOfStandings(nrOfGames, config));
-    if (seasonYear == 2004 && matchdayNr == 1)
-        console.log("calcStandings2: " + JSON.stringify(matchdays));
-    if (matchdays.length == 0) {
-        matchdays = await getMatchdays(seasonYear);
-        matchdays = spliceUnneeded(matchdays, matchdayNr, nrOfGames);
+    /*if (seasonYear == 2004 && matchdayNr == 1)
+        console.log("calcStandings2: " + JSON.stringify(matchdays));*/   
+    if (season.length == 0) {
+        season = await getMatchdays(seasonYear);
+        season = spliceUnneeded(season, matchdayNr, nrOfGames);
+        console.log("New matchdays needed: " + season.length);
     }
 
     //console.log("Got Matchdays: " + matchdays.length);
-    let standings = new Standings(matchdays, config);
+    let standings = new Standings(season, config);
 
     return standings.standings;
 }
@@ -42,12 +44,12 @@ function spliceUnneeded(matchdays, matchdayNr, nrOfGames) {
 }
 
 function getTypeOfStandings(nrOfGames, config) {
-    if (config.home)
+    if (nrOfGames < 34)
+        return "form";
+    else if (config == undefined)
+        return "normal";
+    else if (config.home)
         return "home";
     else if (config.away)
         return "away";
-    else if (nrOfGames < 34)
-        return "form";
-    else
-        return "normal";
 }

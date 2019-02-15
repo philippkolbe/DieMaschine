@@ -12,7 +12,6 @@ module.exports = async handler => {
             return savedFile.content;
         }
     } catch (e) { //File does not exist
-        console.log(e);
         let newFileContent = await writeNewFile(handler);
         return newFileContent;
     }

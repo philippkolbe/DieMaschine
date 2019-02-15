@@ -65,8 +65,6 @@ module.exports.StandingsHandler = class {
         //console.log("Creating StandingsHandler");
         this.season = isValidSeason(season);
         this.matchday = isValidMatchday(matchday);
-        if (season == 2004 && matchday == 1)
-            console.log("StandingsHandler: " + JSON.stringify(seasonMatches))
         this.seasonMatches = seasonMatches;
     }
 

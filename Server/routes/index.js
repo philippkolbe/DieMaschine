@@ -8,7 +8,7 @@ router.get('/season', async (req, res, next) => {
     console.time();
     let response = await requestHandler.handleSeveralRequests(new Handler.SeasonHandler(req.query.start, req.query.end));
     
-    console.log("Seasons: " + response);
+    //console.log("Seasons: " + response);
 
     res.send(response);
     console.timeEnd();

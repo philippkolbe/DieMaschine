@@ -1,22 +1,22 @@
 const StandingsTeam = require('./StandingsTeam');
 
 module.exports = class {
-    constructor(matchdays, config) {
-        //console.log("Creating Standings: mds length: " + matchdays.length);
+    constructor(season, config) {
+        console.log("Creating Standings: mds length: " + season.matchdays.length);
         this.standings = [];
-        this.setup(matchdays);
-        this.calculate(matchdays, config);
+        this.setup(season);
+        this.calculate(season, config);
         this.standings.sort(this.sort);
     }
 
-    setup(matchdays) {
-        matchdays[0].matches.forEach(m => {
+    setup(season) {
+        season.matchdays[0].matches.forEach(m => {
             m.teams.forEach(t => this.standings.push(new StandingsTeam(t)));
         });
     }
 
-    calculate(matchdays, config) { 
-        matchdays.forEach(md => {
+    calculate(season, config) { 
+        season.matchdays.forEach(md => {
             md.matches.forEach(m => this.calcMatch(m, config));
         });
     } 

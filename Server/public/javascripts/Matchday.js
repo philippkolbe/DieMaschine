@@ -14,13 +14,13 @@ module.exports.createMatchday = async (seasonYear, matchdayNr, matchdayMatches, 
 
 class Matchday {
     constructor(seasonYear, matchdayNr, matchdayMatches, areStandingsNeeded, seasonMatches) {
-        //console.log("Creating new matchday: " + matchdayNr);
+        console.log("Creating new matchday: " + matchdayNr);
         this.matchDayNr = matchdayNr;
         this.matches = matchdayMatches.map(m => new Match(m));
     }
 
     async createStandings(seasonYear, matchdayNr, seasonMatchdays) {
-        //console.log("Creating standings");
+        //console.log("Matchday.createStandings: " + seasonMatchdays.matchdays.length);
         let promiseArr = ['', 'Home', 'Away', 'Form']
             .map((str) => {
                 const handler = new Handler[str + 'StandingsHandler'](seasonYear, matchdayNr, seasonMatchdays);
