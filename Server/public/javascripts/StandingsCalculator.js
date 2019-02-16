@@ -1,36 +1,23 @@
 const FileUpdater = require('./FileUpdater');
 const Handler = require('./Handler');
 const Standings = require('./Standings');
+const Season = require('./Season');
 
 module.exports.calculateStandings = async function(seasonYear, matchdayNr, season, nrOfGames, config) {
-    /*if (seasonYear == 2004 && matchdayNr == 1)
-        console.log("calcStandings1: " + JSON.stringify(matchdays));*/
-    console.log("Calcing Standings " + seasonYear + ", " + matchdayNr + " " + getTypeOfStandings(nrOfGames, config) + " Matchdays length1: " + season.matchdays.length);
-    season = season || [];
+    //console.log("Calcing Standings " + seasonYear + ", " + matchdayNr + " " + getTypeOfStandings(nrOfGames, config) + " Matchdays length1: " + season.matchdays.length);
     nrOfGames = nrOfGames || 34;
     config = config || {};
 
     //console.log("Calculating Standings " + seasonYear + " " + matchdayNr + ": " + getTypeOfStandings(nrOfGames, config));
-    /*if (seasonYear == 2004 && matchdayNr == 1)
-        console.log("calcStandings2: " + JSON.stringify(matchdays));*/   
-    if (season.length == 0) {
-        season = await getMatchdays(seasonYear);
-        season = spliceUnneeded(season, matchdayNr, nrOfGames);
-        console.log("New matchdays needed: " + season.length);
+    if (!season) {
+        season = await Season.createSeasonWithoutStandings(seasonYear);
     }
+    season.matchdays = spliceUnneeded(season.matchdays, matchdayNr, nrOfGames);
 
     //console.log("Got Matchdays: " + matchdays.length);
     let standings = new Standings(season, config);
 
     return standings.standings;
-}
-
-async function getMatchdays(seasonYear) {
-    const handler = new Handler.SeasonHandler(seasonYear, seasonYear, false);
-    let season = await FileUpdater(handler);
-    
-    //console.log("SeasonMatchdays: " + season.matchdays.length);
-    return season.matchdays;
 }
 
 function spliceUnneeded(matchdays, matchdayNr, nrOfGames) {
@@ -46,7 +33,7 @@ function spliceUnneeded(matchdays, matchdayNr, nrOfGames) {
 function getTypeOfStandings(nrOfGames, config) {
     if (nrOfGames < 34)
         return "form";
-    else if (config == undefined)
+    else if (!config)
         return "normal";
     else if (config.home)
         return "home";

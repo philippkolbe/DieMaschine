@@ -2,7 +2,7 @@ const StandingsTeam = require('./StandingsTeam');
 
 module.exports = class {
     constructor(season, config) {
-        console.log("Creating Standings: mds length: " + season.matchdays.length);
+        //console.log("Creating Standings: mds length: " + season.matchdays.length);
         this.standings = [];
         this.setup(season);
         this.calculate(season, config);

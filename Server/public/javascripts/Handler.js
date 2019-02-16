@@ -29,6 +29,7 @@ module.exports.MatchdayHandler = class {
         this.end = isValidMatchday(end, 34);
         this.areStandingsNeeded = areStandingsNeeded;
         this.i = this.start;
+        console.log("Start: ", start, this.start);
     }
 
     get fileName() {
