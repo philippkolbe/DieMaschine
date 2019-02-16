@@ -4,7 +4,6 @@ const requestHandler = require('../public/javascripts/requestHandler');
 const Handler = require('../public/javascripts/Handler');
 
 router.get('/season', async (req, res, next) => {
-    console.log("Start")
     console.time();
     let response = await requestHandler.handleSeveralRequests(new Handler.SeasonHandler(req.query.start, req.query.end));
     

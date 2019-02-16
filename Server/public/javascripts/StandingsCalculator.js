@@ -3,30 +3,31 @@ const Handler = require('./Handler');
 const Standings = require('./Standings');
 const Season = require('./Season');
 
-module.exports.calculateStandings = async function(seasonYear, matchdayNr, season, nrOfGames, config) {
-    //console.log("Calcing Standings " + seasonYear + ", " + matchdayNr + " " + getTypeOfStandings(nrOfGames, config) + " Matchdays length1: " + season.matchdays.length);
+module.exports.calculateStandings = async function(seasonYear, matchdayNr, seasonOriginal, nrOfGames, config) {
     nrOfGames = nrOfGames || 34;
     config = config || {};
 
-    //console.log("Calculating Standings " + seasonYear + " " + matchdayNr + ": " + getTypeOfStandings(nrOfGames, config));
-    if (!season) {
+    let season;
+    if (!seasonOriginal) {
         season = await Season.createSeasonWithoutStandings(seasonYear);
+    } else {
+        season = JSON.parse(JSON.stringify(seasonOriginal));//Create copy without reference
     }
-    season.matchdays = spliceUnneeded(season.matchdays, matchdayNr, nrOfGames);
 
-    //console.log("Got Matchdays: " + matchdays.length);
+    season.matchdays = spliceUnneeded(season.matchdays, matchdayNr, nrOfGames);
     let standings = new Standings(season, config);
 
     return standings.standings;
 }
 
 function spliceUnneeded(matchdays, matchdayNr, nrOfGames) {
+    console.log("before splice: " + matchdays.length);
     if (matchdayNr)
         matchdays = matchdays.splice(0, matchdayNr);
-    //console.log("after matchdaynrsplice" + matchdays.length);
+    console.log("after matchdaynrsplice: " + matchdays.length);
     if (nrOfGames)
         matchdays = matchdays.splice(-nrOfGames, nrOfGames);
-    //console.log("after formsplice: " + matchdays.length);
+    console.log("after formsplice: " + matchdays.length);
     return matchdays;
 }
 

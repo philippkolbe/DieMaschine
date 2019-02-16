@@ -2,9 +2,8 @@ const fs = require('./FileSystem.js');
 
 module.exports = async handler => {
     try {
-        //console.log("FileUpdater: " + handler.fileName);
         let savedFile = await fs.getSavedFile(handler.fileName);
-        //console.log(`savedFileContent: ${savedFile.content}`);
+        console.log(`gotSavedFile: ${handler.fileName}`);
         if (isUpdateNeeded(savedFile)) {
             let newFileContent = await writeNewFile(handler);
             return newFileContent;
@@ -12,6 +11,7 @@ module.exports = async handler => {
             return savedFile.content;
         }
     } catch (e) { //File does not exist
+        console.log("Creating new file: " + handler.fileName);
         let newFileContent = await writeNewFile(handler);
         return newFileContent;
     }

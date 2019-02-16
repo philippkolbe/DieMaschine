@@ -4,7 +4,7 @@ const FileUpdater = require('./FileUpdater');
 const Season = require('./Season');
 
 module.exports.createMatchday = async (seasonYear, matchdayNr, matchdayMatches, areStandingsNeeded, season) => {
-    console.log("CreateMatchday(): "  + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
+    //console.log("CreateMatchday(): "  + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
     let md = new Matchday(seasonYear, matchdayNr, matchdayMatches, areStandingsNeeded, season);
 
     if (areStandingsNeeded != false)
@@ -15,15 +15,15 @@ module.exports.createMatchday = async (seasonYear, matchdayNr, matchdayMatches, 
 
 class Matchday {
     constructor(seasonYear, matchdayNr, matchdayMatches, areStandingsNeeded, season) {
-        console.log("Creating new matchday: " + matchdayNr);
-        this.matchDayNr = matchdayNr;
+        //console.log("Creating new matchday: " + matchdayNr);
+        this.matchdayNr = matchdayNr;
         this.matches = matchdayMatches.map(m => new Match(m));
     }
 
     async createStandings(seasonYear, matchdayNr, season) {
         if (!season)
             season = await Season.createSeasonWithoutStandings(seasonYear);
-        console.log("Matchday.createStandings: " + season.matchdays.length);
+        //console.log("Matchday.createStandings: " + season.matchdays.length);
         let promiseArr = ['', 'Home', 'Away', 'Form']
             .map((str) => {
                 const handler = new Handler[str + 'StandingsHandler'](seasonYear, matchdayNr, season);

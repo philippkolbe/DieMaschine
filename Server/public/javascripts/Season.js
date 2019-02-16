@@ -24,7 +24,7 @@ class Season {
     async createMatchdays(year, matches, areStandingsNeeded) {
         let seasonWithoutStandings;
         if (areStandingsNeeded != false) {//Calcing season without standings for standings
-            seasonWithoutStandings = await module.exports.getSeasonWithoutStandings(year);
+            seasonWithoutStandings = await module.exports.createSeasonWithoutStandings(year);
         }
 
         console.log("Season Creating Matchdays: " + ((areStandingsNeeded != false) ? "standingsNeeded" : "standingsNOTNeeded"));
@@ -64,6 +64,6 @@ class Season {
 module.exports.createSeasonWithoutStandings = async (year) => {
     const seasonHandler = new Handler.SeasonHandler(year, year, false);
     const season = await FileUpdater(seasonHandler);
-    //console.log("Season.getSeasonWithoutStandings: " + season.matchdays.length);
+    console.log("Season.getSeasonWithoutStandings: " + season.matchdays.length);
     return season;
 }

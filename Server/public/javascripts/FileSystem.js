@@ -11,7 +11,11 @@ module.exports.getSavedFile = name => {
             if (err) {
                 reject(err.message);
             } else {
-                resolve(JSON.parse(data));
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    console.log(e, name)
+                }
             }
         });
     });

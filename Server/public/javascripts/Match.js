@@ -7,9 +7,12 @@ class Match {
             new Team(match, 1)
         ];
         if (match.MatchIsFinished) {
+            const endResultIdx = match.MatchResults.findIndex((mr => {
+                return mr.ResultName == "Endergebnis" || mr.ResultTypeID == 2;
+            }));
             this.result = [
-                match.MatchResults[0].PointsTeam1,
-                match.MatchResults[0].PointsTeam2
+                match.MatchResults[endResultIdx].PointsTeam1,
+                match.MatchResults[endResultIdx].PointsTeam2
             ];
         }
     }
