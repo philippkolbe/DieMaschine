@@ -3,6 +3,7 @@ const FileUpdater = require('./FileUpdater');
 module.exports.handleSeveralRequests = async handler => {
     try {
         let promiseArr = [];
+        console.log("hsr1", handler, typeof handler.i, handler.i, typeof handler.start, handler.start, typeof handler.end, handler.end);
         for (handler.i = handler.start; handler.i <= handler.end; handler.i++) {
             let data = await module.exports.handleRequest(handler);
             promiseArr.push(JSON.parse(data));

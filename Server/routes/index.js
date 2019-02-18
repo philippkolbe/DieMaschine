@@ -3,61 +3,87 @@ const router = express.Router();
 const requestHandler = require('../public/javascripts/requestHandler');
 const Handler = require('../public/javascripts/Handler');
 
-router.get('/season', async (req, res, next) => {
-    console.time();
-    let response = await requestHandler.handleSeveralRequests(new Handler.SeasonHandler(req.query.start, req.query.end));
+router.get('/seasons', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createSeasonsHandler(req.query));
     
-    //console.log("Seasons: " + response);
+    res.send(response);
+});
+
+router.get('/season', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createSeasonHandler(req.query));
+    
+    res.send(response);
+});
+
+router.get('/matchdays', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createMatchdaysHandler(req.query));
 
     res.send(response);
-    console.timeEnd();
 });
 
 router.get('/matchday', async (req, res, next) => {
-    let response = await requestHandler.handleSeveralRequests(new Handler.MatchdayHandler(req.query.season, req.query.start, req.query.end));
+    let response = await requestHandler.handleRequest(await Handler.createMatchdayHandler(req.query));
 
-    //console.log("Matchday: " + response);
-    
     res.send(response);
 });
 
-router.get('/current', async (req, res, next) => {
-    let response = await requestHandler.handleRequest(new Handler.CurrentMatchdayNrHandler());
+router.get('/currentMatchdayNr', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createCurrentMatchdayNrHandler());
 
-   // console.log("CurrentMatchdayNr: " + response);
-    
     res.send(response);
 });
 
-router.get('/standings', async (req, res, next) => {
-    let response = await requestHandler.handleRequest(new Handler.StandingsHandler(req.query.season, req.query.matchday));
+router.get('/currentMatchday', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createCurrentMatchdayHandler());
 
-    //console.log("CurrentMatchday: " + response);
-    
     res.send(response);
 });
 
-router.get('/homeStandings', async (req, res, next) => {
-    let response = await requestHandler.handleRequest(new Handler.HomeStandingsHandler(req.query.season, req.query.matchday));
+router.get('/tables', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createTablesHandler(req.query));
 
-    //console.log("CurrentMatchday: " + response);
-    
     res.send(response);
 });
 
-router.get('/awayStandings', async (req, res, next) => {
-    let response = await requestHandler.handleRequest(new Handler.AwayStandingsHandler(req.query.season, req.query.matchday));
+router.get('/table', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createTableHandler(req.query));
 
-    //console.log("CurrentMatchday: " + response);
-    
     res.send(response);
 });
 
-router.get('/formStandings', async (req, res, next) => {
-    let response = await requestHandler.handleRequest(new Handler.FormStandingsHandler(req.query.season, req.query.matchday));
+router.get('/homeTables', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createHomeTablesHandler(req.query));
 
-    //console.log("CurrentMatchday: " + response);
-    
+    res.send(response);
+});
+
+router.get('/homeTable', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createHomeTableHandler(req.query));
+
+    res.send(response);
+});
+
+router.get('/awayTables', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createAwayTablesHandler(req.query));
+
+    res.send(response);
+});
+
+router.get('/awayTable', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createAwayTableHandler(req.query));
+
+    res.send(response);
+});
+
+router.get('/formTables', async (req, res, next) => {
+    let response = await requestHandler.handleSeveralRequests(await Handler.createFormTablesHandler(req.query));
+
+    res.send(response);
+});
+
+router.get('/formTable', async (req, res, next) => {
+    let response = await requestHandler.handleRequest(await Handler.createFormTableHandler(req.query));
+
     res.send(response);
 });
 
